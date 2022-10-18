@@ -1,0 +1,23 @@
+https://leetcode.com/problems/regular-expression-matching/description/
+
+public boolean match(char c1, char c2) {
+        if (c2 == '.') return true;
+        return c1 == c2;
+    }
+    public boolean func(int idx1, int idx2, int n1,int n2, String s, String p)
+    {
+        if(idx2 ==n2)
+            return idx1==n1;
+
+        
+        if(idx2+1<n2 && p.charAt(idx2+1)=='*')
+            return func(idx1,idx2+2,n1,n2,s,p) || (idx1<n1 && match(s.charAt(idx1), p.charAt(idx2))
+            && func(idx1+1,idx2,n1,n2,s,p));
+        return (idx1<n1 && match(s.charAt(idx1),p.charAt(idx2)) && func(idx1+1,idx2+1,n1,n2,s,p)); 
+    }
+    public boolean isMatch(String s, String p) 
+    {
+        int n1 = s.length();
+        int n2 = p.length();
+        return func(0,0,n1,n2,s,p);
+    }
