@@ -1,0 +1,64 @@
+class Solution {
+    public int maximumWhiteTiles(int[][] tiles, int carpetLen) 
+    {
+        Arrays.sort(tiles,(a,b)->a[0]-b[0]); // sorting tiles
+
+        int sum = 0;
+
+        // prefix sum for tiles until that tile range
+        int arr[] = new int[tiles.length];
+        int ans = 0;
+
+        // prefix sum calcltn
+        for(int i=0;i<tiles.length;i++)
+        {
+            sum+=tiles[i][1]-tiles[i][0]+1;
+            arr[i] = sum;
+            //System.out.print(arr[i] + " ");
+        }
+        
+        // keeping the carpet right from each tile beginning and verifying maximum tiles covered
+        for(int i=0;i<tiles.length;i++)
+        {
+            int left_carpet_start = tiles[i][0];
+            int right_carpet_end = tiles[i][0] + carpetLen - 1;
+            int tiles_end = tiles.length-1;
+            int tiles_start = i;
+
+            // checking for the tiles which are fully coverd by carpet which can be in between 
+            // left_carpet_start and tiles array end
+            while(tiles_start <= tiles_end)
+            {
+                int mid = (tiles_start + tiles_end)/2;
+                if(tiles[mid][1] < right_carpet_end)
+                {
+                    tiles_start = mid+1;
+                }
+                else
+                {
+                    tiles_end = mid-1;
+                }
+            }
+            System.out.println("last_total_coverd_tile "+tiles_end);
+            // from the above binary search u need tiles_end which means tiles fully covered by carpet
+
+            int no_of_tiles_covered = 0;
+            if(tiles_end != i-1)
+            {
+                no_of_tiles_covered += arr[tiles_end];
+                if(i > 0)
+                    no_of_tiles_covered -= arr[i-1];
+            }
+            System.out.println("totally covered tiles "+no_of_tiles_covered);
+            // partially covered tiles by the carpet
+            if(tiles_end + 1 < tiles.length)
+            {
+                no_of_tiles_covered += Math.max(0,right_carpet_end - tiles[tiles_end+1][0] + 1);
+            }
+            //System.out.println("no_of_tiles_covers "+no_of_tiles_covered);
+            ans  = Math.max(ans,no_of_tiles_covered);
+        }  
+
+        return ans;
+    }
+}
