@@ -1,0 +1,23 @@
+class Solution {
+    public String parseTernary(String expression) 
+    {
+        int n = expression.length();
+        Stack<Character> st= new Stack<>();
+        for(int i=n-1;i>=0;i-=2)
+        {
+            if(i>n-3 || expression.charAt(i+1)!='?')
+            {
+                st.push(expression.charAt(i));
+                continue;
+            }
+
+            char truth = st.pop();
+            char falsity = st.pop();
+            if(expression.charAt(i) == 'T')
+                st.push(truth);
+            else
+                st.push(falsity);
+        }  
+        return String.valueOf(st.pop());
+    }
+}
