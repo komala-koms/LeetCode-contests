@@ -1,0 +1,80 @@
+class UnionFind
+{
+    int[] rank;
+    int[] root;
+
+    public UnionFind(int n)
+    {
+        this.rank = new int[n];
+        this.root = new int[n];
+
+        for(int i=0;i<n;i++)
+        {
+            this.root[i] = i;
+            this.rank[i] = 0;
+        }
+    }
+
+    public int find(int x)
+    {
+        if(x == root[x])
+            return x;
+        return root[x] = find(root[x]);
+    }
+
+    public void union(int x, int y)
+    {
+        int rootx = find(x);
+        int rooty = find(y);
+        if(rootx != rooty)
+        {
+            if(rank[rootx] > rank[rooty])
+            {
+                root[rooty] = rootx;
+            }
+            else if(rank[rooty] > rank[rootx])
+            {
+                root[rootx] = rooty;
+            }
+            else
+            {
+                root[rooty] = rootx;
+                rank[rootx] += 1;
+            }
+        }
+        
+    }
+}
+class Solution 
+{
+    public String smallestStringWithSwaps(String s, List<List<Integer>> pairs) 
+    {
+        int n = s.length();
+        UnionFind uf = new UnionFind(n);
+        for(int i=0;i<pairs.size();i++)
+        {
+            int x = pairs.get(i).get(0);
+            int y = pairs.get(i).get(1);
+            uf.union(x,y);
+        }
+        HashMap<Integer,PriorityQueue<Character>> map = new HashMap<>();
+        char ch[] = new char[n];
+        for(int i=0;i<n;i++)
+        {
+            if(!map.containsKey(uf.find(i)))
+            {
+                PriorityQueue<Character> pq = new PriorityQueue();
+                map.put(uf.find(i),pq);
+            } 
+            PriorityQueue<Character> temp = map.get(uf.find(i));
+            temp.add(s.charAt(i));
+            map.put(uf.find(i),temp);
+        }
+        for(int i=0;i<n;i++)
+        {
+            ch[i] = map.get(uf.find(i)).poll();
+        }
+
+        return String.valueOf(ch);
+    }
+}
