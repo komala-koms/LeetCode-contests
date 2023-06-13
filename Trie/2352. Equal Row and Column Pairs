@@ -1,0 +1,71 @@
+class TrieNode
+{
+    int count;
+    HashMap<Integer,TrieNode> children;
+
+    public TrieNode()
+    {
+        this.count =0;
+        this.children = new HashMap<>();
+    }
+}
+class Trie
+{
+    TrieNode trie;
+    public Trie()
+    {
+        this.trie = new TrieNode();
+    }
+
+    public void insert(int[] array)
+    {
+        TrieNode mytrie = this.trie;
+        for(int a : array)
+        {
+            if(!mytrie.children.containsKey(a))
+            {
+                mytrie.children.put(a,new TrieNode());
+            }
+            
+                mytrie = mytrie.children.get(a);
+            
+        }
+        mytrie.count += 1;
+    }
+
+    public int search(int[] array)
+    {
+        TrieNode mytrie = this.trie;
+        for(int a : array)
+        {
+            if(mytrie.children.containsKey(a))
+            {
+                mytrie = mytrie.children.get(a);
+            }
+            else
+                return 0;
+        }
+        return mytrie.count;
+    }
+}
+class Solution {
+    public int equalPairs(int[][] grid) 
+    {
+            Trie trie = new Trie();
+            int count =0,n = grid.length;
+            for(int[] row:grid)
+            {
+                trie.insert(row);
+            }
+            for(int c=0;c<n;c++)
+            {
+                int[] col = new int[n];
+                for(int r=0;r<n;r++)
+                {
+                    col[r] = grid[r][c];
+                }
+                count += trie.search(col);
+            }
+            return count;
+    }
+}
